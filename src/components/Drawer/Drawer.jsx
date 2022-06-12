@@ -15,7 +15,7 @@ function Drawer({ onClose, items = [], onRemoveItem }) {
         </h2>
 
         <div className="items flex">
-          {items.map(({ name, price, img }, index) => {
+          {items.map(({ name, price, img, id }, index) => {
             return (
               <div key={index} className="cartItem d-flex align-center mb-20">
                 <div
@@ -30,7 +30,7 @@ function Drawer({ onClose, items = [], onRemoveItem }) {
                   className="removeBtn"
                   src="/img/button-remove.svg"
                   alt="remove"
-                  onClick={() => onRemoveItem({ name, price, img })}
+                  onClick={() => onRemoveItem(id)}
                 />
               </div>
             );
