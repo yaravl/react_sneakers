@@ -1,6 +1,6 @@
 import "./Drawer.scss";
 
-function Drawer({ onClose }) {
+function Drawer({ onClose, items = [], onRemoveItem }) {
   return (
     <div className="overlay">
       <div className="drawer d-flex flex-column">
@@ -15,21 +15,26 @@ function Drawer({ onClose }) {
         </h2>
 
         <div className="items flex">
-          <div className="cartItem d-flex align-center mb-20">
-            <div
-              style={{ backgroundImage: "url(/img/sneakers/1.jpg)" }}
-              className="cartItemImg"
-            ></div>
-            <div className="mr-20 flex">
-              <p className="mb-5">Мужские Кроссовки Nike Air Max 270</p>
-              <b>12 999 руб.</b>
-            </div>
-            <img
-              className="removeBtn"
-              src="/img/button-remove.svg"
-              alt="remove"
-            />
-          </div>
+          {items.map(({ name, price, img }, index) => {
+            return (
+              <div key={index} className="cartItem d-flex align-center mb-20">
+                <div
+                  style={{ backgroundImage: `url(${img})` }}
+                  className="cartItemImg"
+                ></div>
+                <div className="mr-20 flex">
+                  <p className="mb-5">{name}</p>
+                  <b>{price} руб.</b>
+                </div>
+                <img
+                  className="removeBtn"
+                  src="/img/button-remove.svg"
+                  alt="remove"
+                  onClick={() => onRemoveItem({ name, price, img })}
+                />
+              </div>
+            );
+          })}
         </div>
 
         <div className="cartTotalBlock">

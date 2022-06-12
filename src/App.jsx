@@ -1,22 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, Header, Drawer } from "./components";
-
-const arr = [
-  {
-    name: "Мужские Кроссовки Nike Blazer Mid Suede",
-    price: 12999,
-    img: "1.jpg",
-  },
-  { name: "Мужские Кроссовки Nike Air Max 270", price: 15600, img: "2.jpg" },
-];
+import axios from "axios";
 
 function App() {
+  const [items, setItems] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
   const [cartOpened, setCartOpened] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get("https://62a63067430ba53411d2342d.mockapi.io/items")
+      .then((resp) => setItems(resp.data));
+  }, []);
+
+  const onAddToCart = (obj) => {
+    setCartItems((prevState) => [...prevState, obj]);
+  };
+
+  const onRemoveInCart = (obj) => {
+    setCartItems((prevState) => prevState.filter((_) => _.img !== obj.img));
+  };
+
+  console.log(cartItems);
 
   return (
     <div className="wrapper clear">
-      {cartOpened && <Drawer onClose={() => setCartOpened(false)} />}
-      //TODO: 4(136)
+      {cartOpened && (
+        <Drawer
+          items={cartItems}
+          onClose={() => setCartOpened(false)}
+          onRemoveItem={(obj) => onRemoveInCart(obj)}
+        />
+      )}
       <Header onClickCart={() => setCartOpened(true)} />
       <div className="content p-40">
         <div className="d-flex align-center mb-40 justify-between">
@@ -28,14 +43,15 @@ function App() {
         </div>
 
         <div className="d-flex flex-wrap">
-          {arr.map((item) => (
+          {items.map((item) => (
             <Card
-              key={item.name}
+              key={item.img}
               name={item.name}
               price={item.price}
               img={item.img}
               onFavorite={() => console.log("Добавили в закладки")}
-              onPlus={() => console.log("Добавили в карзину")}
+              onPlus={(obj) => onAddToCart(obj)}
+              onRemove={(obj) => onRemoveInCart(obj)}
             />
           ))}
         </div>
