@@ -1,8 +1,19 @@
 import { useEffect, useState } from "react";
 import css from "./Card.module.scss";
 
-function Card({ name, price, img, onPlus, onRemove, onFavorite }) {
+function Card({
+  id,
+  name,
+  price,
+  img,
+  onPlus,
+  onRemove,
+  onFavorite,
+  onRemoveFavorite,
+  favorited = false,
+}) {
   const [isAdded, setIsAdded] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(favorited);
 
   const onClickPlus = () => {
     setIsAdded(!isAdded);
@@ -13,11 +24,20 @@ function Card({ name, price, img, onPlus, onRemove, onFavorite }) {
     }
   };
 
+  const onClickFavorite = () => {
+    setIsFavorite(!isFavorite);
+    onFavorite({ name, price, img, id });
+  };
+
   return (
     <div className={css.card}>
-      <div className={css.favorite} onClick={onFavorite}>
-        <img src="/img/heart-unliked.svg" alt="unliked" />
+      <div className={css.favorite} onClick={onClickFavorite}>
+        <img
+          src={isFavorite ? "/img/heart-liked.svg" : "/img/heart-unliked.svg"}
+          alt="favorite"
+        />
       </div>
+
       <img width={133} height={112} src={img} alt="Sneakers" />
       <h5>{name}</h5>
       <div className="d-flex justify-between align-center">

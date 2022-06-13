@@ -104,6 +104,27 @@ body {
   }
 }
 
+.cartEmpty {
+  .greenButton {
+    position: relative;
+
+    &:hover {
+      img {
+        transform: rotate(180deg);
+        left: 25px;
+      }
+    }
+
+    img {
+      position: absolute;
+      left: 30px;
+      top: 22px;
+      transform: rotate(180deg);
+      transition: transform ease-in-out .15s, left ease-in-out .15s;
+    }
+  }
+}
+
 .cartItem {
   border: 1px solid #f3f3f3;
   border-radius: 20px;
