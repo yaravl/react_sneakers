@@ -11,22 +11,19 @@ function Card({
   onFavorite,
   onRemoveFavorite,
   favorited = false,
+  added = false,
 }) {
-  const [isAdded, setIsAdded] = useState(false);
+  const [isAdded, setIsAdded] = useState(added);
   const [isFavorite, setIsFavorite] = useState(favorited);
 
   const onClickPlus = () => {
     setIsAdded(!isAdded);
-    if (!isAdded) {
-      onPlus({ name, price, img });
-    } else {
-      onRemove({ name, price, img });
-    }
+    onPlus({ id, name, price, img });
   };
 
   const onClickFavorite = () => {
     setIsFavorite(!isFavorite);
-    onFavorite({ name, price, img, id });
+    onFavorite({ id, name, price, img });
   };
 
   return (

@@ -2,6 +2,7 @@ import { Card } from "../components";
 
 const Home = ({
   items,
+  cartItems,
   setSearchValue,
   searchValue,
   onChangeSearchInput,
@@ -29,7 +30,6 @@ const Home = ({
           />
         </div>
       </div>
-
       <div className="d-flex flex-wrap">
         {items
           .filter((item) =>
@@ -40,6 +40,9 @@ const Home = ({
               key={item.img}
               onFavorite={(obj) => onAddToFavorite(obj)}
               onPlus={(obj) => onAddToCart(obj)}
+              added={cartItems.some(
+                (obj) => Number(obj.id) === Number(item.id)
+              )}
               {...item}
             />
           ))}

@@ -12,23 +12,42 @@ function App() {
   const [cartOpened, setCartOpened] = useState(false);
 
   useEffect(() => {
-    axios
-      .get("https://62a63067430ba53411d2342d.mockapi.io/items")
-      .then((resp) => setItems(resp.data));
-    axios
-      .get("https://62a63067430ba53411d2342d.mockapi.io/cart")
-      .then((resp) => setCartItems(resp.data));
-    axios
-      .get("https://62a63067430ba53411d2342d.mockapi.io/favorites")
-      .then((resp) => setFavorites(resp.data));
+    async function fetchData() {
+      const cartResp = await axios.get(
+        "https://62a63067430ba53411d2342d.mockapi.io/cart"
+      );
+      const favoritesResp = await axios.get(
+        "https://62a63067430ba53411d2342d.mockapi.io/favorites"
+      );
+      const itemsResp = await axios.get(
+        "https://62a63067430ba53411d2342d.mockapi.io/items"
+      );
+
+      setCartItems(cartResp.data);
+      setFavorites(favoritesResp.data);
+      setItems(itemsResp.data);
+    }
+
+    fetchData();
   }, []);
 
   const onAddToCart = (obj) => {
-    axios.post("https://62a63067430ba53411d2342d.mockapi.io/cart", obj);
-    setCartItems((prevState) => [...prevState, obj]);
+    try {
+      if (cartItems.find((item) => Number(item.id) === Number(obj.id))) {
+        axios.delete(
+          `https://62a63067430ba53411d2342d.mockapi.io/cart/${obj.id}`
+        );
+        setCartItems((prevState) =>
+          prevState.filter((_) => Number(_.id) !== Number(obj.id))
+        );
+      } else {
+        axios.post("https://62a63067430ba53411d2342d.mockapi.io/cart", obj);
+        setCartItems((prevState) => [...prevState, obj]);
+      }
+    } catch (e) {
+      alert("Не удалосьт добавить в корзину");
+    }
   };
-
-  //TODO: 6
 
   const onAddToFavorite = async (obj) => {
     try {
@@ -50,7 +69,6 @@ function App() {
   };
 
   const onRemoveInCart = (id) => {
-    console.log(id);
     axios.delete(`https://62a63067430ba53411d2342d.mockapi.io/cart/${id}`);
     setCartItems((prevState) => prevState.filter((_) => _.id !== id));
   };
@@ -76,6 +94,7 @@ function App() {
           element={
             <Home
               items={items}
+              cartItems={cartItems}
               searchValue={searchValue}
               setSearchValue={setSearchValue}
               onChangeSearchInput={onChangeSearchInput}
