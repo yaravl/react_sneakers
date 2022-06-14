@@ -28,6 +28,7 @@ function App() {
       setItems(itemsResp.data);
     }
 
+    //TODO: 6(104)
     fetchData();
   }, []);
 
