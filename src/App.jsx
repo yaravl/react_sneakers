@@ -10,6 +10,7 @@ function App() {
   const [favorites, setFavorites] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [cartOpened, setCartOpened] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
@@ -26,9 +27,10 @@ function App() {
       setCartItems(cartResp.data);
       setFavorites(favoritesResp.data);
       setItems(itemsResp.data);
+
+      setIsLoading(false);
     }
 
-    //TODO: 6(104)
     fetchData();
   }, []);
 
@@ -101,6 +103,7 @@ function App() {
               onChangeSearchInput={onChangeSearchInput}
               onAddToFavorite={onAddToFavorite}
               onAddToCart={onAddToCart}
+              isLoading={isLoading}
             />
           }
         />
