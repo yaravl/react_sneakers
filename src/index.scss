@@ -71,6 +71,10 @@ body {
   .greenButton {
     position: relative;
 
+    &:disabled {
+      background-color: #dfdfdf;
+    }
+
     &:hover {
      img {
        transform: translateX(5px);

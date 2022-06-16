@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
 import ContentLoader from "react-content-loader";
 import css from "./Card.module.scss";
 import { useContext } from "react";
 import AppContext from "../../context";
 
-function Card({ id, idCart, idFav, name, price, img, loading = false }) {
-  const { isItemAdded, onAddToFavorite, favorites, onAddToCart } =
+function Card({ id, idCart, name, price, img, loading = false }) {
+  const { isItemAdded, onAddToFavorite, favorites, onAddToCart, numFormat } =
     useContext(AppContext);
 
   const onClickPlus = () => {
@@ -52,7 +51,7 @@ function Card({ id, idCart, idFav, name, price, img, loading = false }) {
           <div className="d-flex justify-between align-center">
             <div className="d-flex flex-column">
               <span>Цена:</span>
-              <b>{price} руб.</b>
+              <b>{numFormat(price)} руб.</b>
             </div>
             <img
               src={

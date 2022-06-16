@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 import "./Header.scss";
+import { useContext } from "react";
+import AppContext from "../../context";
 
-function Header({ onClickCart }) {
+function Header() {
+  const { cartItems, favorites, totalPrice, numFormat, setCartOpened } =
+    useContext(AppContext);
   return (
     <header className="header d-flex justify-between align-center p-40">
       <Link to="/">
@@ -15,13 +19,19 @@ function Header({ onClickCart }) {
         </div>
       </Link>
       <ul className="d-flex">
-        <li className="mr-30 cu-p" onClick={onClickCart}>
+        <li className="mr-30 cu-p" onClick={() => setCartOpened(true)}>
           <img width={18} height={18} src="/img/cart.svg" alt="cart" />
-          <span>1205 руб.</span>
+          {cartItems.length > 0 && (
+            <span className="header__count">{cartItems.length}</span>
+          )}
+          <span>{numFormat(totalPrice)} руб.</span>
         </li>
         <li className="mr-20 cu-p">
           <Link to="/favorites">
             <img width={18} height={18} src="/img/heart.svg" alt="heart" />
+            {favorites.length > 0 && (
+              <span className="header__count">{favorites.length}</span>
+            )}
           </Link>
         </li>
         <li>

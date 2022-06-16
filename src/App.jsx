@@ -100,7 +100,13 @@ function App() {
   const isItemAdded = (id) => {
     return cartItems.some((obj) => Number(obj.id) === Number(id));
   };
-  //TODO: 6(229)
+  const totalPrice =
+    cartItems && cartItems.reduce((acc, item) => acc + item.price, 0);
+
+  const numFormat = (num) => {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ");
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -111,12 +117,16 @@ function App() {
         onAddToFavorite,
         onAddToCart,
         onRemoveInCart,
+        totalPrice,
+        numFormat,
+        setCartOpened,
+        setCartItems,
       }}
     >
       <div className="wrapper clear">
-        {cartOpened && <Drawer onClose={() => setCartOpened(false)} />}
+        {cartOpened && <Drawer />}
 
-        <Header items={favorites} onClickCart={() => setCartOpened(true)} />
+        <Header />
 
         <Routes>
           <Route
@@ -132,10 +142,7 @@ function App() {
               />
             }
           />
-          <Route
-            path="/favorites"
-            element={<Favorites onAddToFavorite={onAddToFavorite} />}
-          />
+          <Route path="/favorites" element={<Favorites />} />
         </Routes>
       </div>
     </AppContext.Provider>

@@ -1,16 +1,53 @@
 import "./Drawer.scss";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import AppContext from "../../context";
+import { Info } from "../index";
+import axios from "axios";
 
-function Drawer({ onClose }) {
-  const { cartItems, onRemoveInCart } = useContext(AppContext);
+function Drawer() {
+  const {
+    cartItems,
+    onRemoveInCart,
+    totalPrice,
+    numFormat,
+    setCartOpened,
+    setCartItems,
+  } = useContext(AppContext);
+
+  const [isOrderComplete, setIsOrderComplete] = useState(false);
+  const [orderId, setOrderId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  const onClickOrder = async () => {
+    try {
+      setIsLoading(true);
+      const { data } = await axios.post(
+        "https://62a63067430ba53411d2342d.mockapi.io/orders",
+        { items: cartItems }
+      );
+      setOrderId(data.idOrder);
+      setIsOrderComplete(true);
+      setCartItems([]);
+      for (let i = 0; i < cartItems.length; i++) {
+        const item = cartItems[i];
+        await onRemoveInCart(item.idCart);
+        await delay(500);
+      }
+    } catch (e) {
+      alert("Не удалось создать заказ!");
+    }
+    setIsLoading(false);
+  };
+
   return (
     <div className="overlay">
       <div className="drawer d-flex flex-column">
         <h2 className="mb-30 d-flex justify-between">
           Корзина
           <img
-            onClick={onClose}
+            onClick={() => setCartOpened(false)}
             className="removeBtn cu-p"
             src="/img/button-remove.svg"
             alt="remove"
@@ -32,7 +69,7 @@ function Drawer({ onClose }) {
                     ></div>
                     <div className="mr-20 flex">
                       <p className="mb-5">{name}</p>
-                      <b>{price} руб.</b>
+                      <b>{numFormat(price)} руб.</b>
                     </div>
                     <img
                       className="removeBtn"
@@ -50,36 +87,41 @@ function Drawer({ onClose }) {
                 <li className="d-flex">
                   <span>Итого:</span>
                   <div></div>
-                  <b>21 498 руб.</b>
+                  <b>{numFormat(totalPrice) + " руб."}</b>
                 </li>
                 <li className="d-flex">
                   <span>Налог 5%:</span>
                   <div></div>
-                  <b>107 руб.</b>
+                  <b>
+                    {numFormat(((totalPrice / 100) * 5).toFixed()) + " руб."}
+                  </b>
                 </li>
               </ul>
-              <button className="greenButton">
+              <button
+                disabled={isLoading}
+                onClick={onClickOrder}
+                className="greenButton"
+              >
                 Оформить заказ <img src="/img/arrow.svg" alt="arrow" />
               </button>
             </div>
           </>
         ) : (
-          <div className="cartEmpty d-flex align-center justify-center flex-column flex">
-            <img
-              className="mb-20"
-              src="/img/empty-cart.jpg"
-              alt="empty-cart"
-              width={120}
-              height={120}
-            />
-            <h2>Корзина пустая</h2>
-            <p className="opacity-6">
-              Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ.
-            </p>
-            <button onClick={onClose} className="greenButton mt-30">
-              <img src="/img/arrow.svg" alt="arrow" /> Вернуться назад
-            </button>
-          </div>
+          <>
+            {isOrderComplete ? (
+              <Info
+                title="Заказ оформлен!"
+                description={`Ваш заказ #${orderId} скоро будет передан курьерской доставке`}
+                image="/img/complete-order.jpg"
+              />
+            ) : (
+              <Info
+                title="Корзина пустая"
+                description="Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ."
+                image="/img/empty-cart.jpg"
+              />
+            )}
+          </>
         )}
       </div>
     </div>

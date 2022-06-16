@@ -2,11 +2,9 @@ import { Card } from "../components";
 
 const Home = ({
   items,
-  cartItems,
   setSearchValue,
   searchValue,
   onChangeSearchInput,
-  onAddToCart,
   onAddToFavorite,
   isLoading,
 }) => {
