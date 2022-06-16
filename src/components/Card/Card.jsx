@@ -4,24 +4,15 @@ import css from "./Card.module.scss";
 import { useContext } from "react";
 import AppContext from "../../context";
 
-function Card({
-  id,
-  name,
-  price,
-  img,
-  onPlus,
-  onFavorite,
-  favorited = false,
-  loading = false,
-}) {
-  const { isItemAdded, onAddToFavorite, favorites } = useContext(AppContext);
+function Card({ id, idCart, idFav, name, price, img, loading = false }) {
+  const { isItemAdded, onAddToFavorite, favorites, onAddToCart } =
+    useContext(AppContext);
 
   const onClickPlus = () => {
     isItemAdded(id);
-    onPlus({ id, name, price, img });
+    onAddToCart({ idCart, id, name, price, img });
   };
 
-  console.log();
   const onClickFavorite = () => {
     onAddToFavorite({ id, name, price, img });
   };

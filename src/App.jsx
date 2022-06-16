@@ -38,14 +38,26 @@ function App() {
 
   const onAddToCart = (obj) => {
     try {
-      if (cartItems.find((item) => Number(item.id) === Number(obj.id))) {
+      const cartItem = cartItems.find(
+        (item) => Number(item.id) === Number(obj.id)
+      );
+      if (cartItem !== undefined) {
         axios.delete(
-          `https://62a63067430ba53411d2342d.mockapi.io/cart/${obj.id}`
+          `https://62a63067430ba53411d2342d.mockapi.io/cart/${cartItem.idCart}`
         );
         setCartItems((prevState) =>
           prevState.filter((_) => Number(_.id) !== Number(obj.id))
         );
       } else {
+        Object.assign(obj, {
+          idCart: String(
+            Number(
+              cartItems.length === 0
+                ? 1
+                : +cartItems[cartItems.length - 1].idCart + 1
+            )
+          ),
+        });
         axios.post("https://62a63067430ba53411d2342d.mockapi.io/cart", obj);
         setCartItems((prevState) => [...prevState, obj]);
       }
@@ -56,9 +68,10 @@ function App() {
 
   const onAddToFavorite = async (obj) => {
     try {
-      if (favorites.find((item) => item.id === obj.id)) {
+      const favoriteItem = favorites.find((item) => item.id === obj.id);
+      if (favoriteItem !== undefined) {
         axios.delete(
-          `https://62a63067430ba53411d2342d.mockapi.io/favorites/${obj.id}`
+          `https://62a63067430ba53411d2342d.mockapi.io/favorites/${favoriteItem.idFav}`
         );
         setFavorites((prevState) => prevState.filter((_) => _.id !== obj.id));
         return false;
@@ -77,7 +90,7 @@ function App() {
 
   const onRemoveInCart = (id) => {
     axios.delete(`https://62a63067430ba53411d2342d.mockapi.io/cart/${id}`);
-    setCartItems((prevState) => prevState.filter((_) => _.id !== id));
+    setCartItems((prevState) => prevState.filter((_) => _.idCart !== id));
   };
 
   const onChangeSearchInput = (e) => {
@@ -90,16 +103,18 @@ function App() {
   //TODO: 6(229)
   return (
     <AppContext.Provider
-      value={{ items, cartItems, favorites, isItemAdded, onAddToFavorite }}
+      value={{
+        items,
+        cartItems,
+        favorites,
+        isItemAdded,
+        onAddToFavorite,
+        onAddToCart,
+        onRemoveInCart,
+      }}
     >
       <div className="wrapper clear">
-        {cartOpened && (
-          <Drawer
-            items={cartItems}
-            onClose={() => setCartOpened(false)}
-            onRemoveItem={onRemoveInCart}
-          />
-        )}
+        {cartOpened && <Drawer onClose={() => setCartOpened(false)} />}
 
         <Header items={favorites} onClickCart={() => setCartOpened(true)} />
 
@@ -113,8 +128,6 @@ function App() {
                 searchValue={searchValue}
                 setSearchValue={setSearchValue}
                 onChangeSearchInput={onChangeSearchInput}
-                onAddToFavorite={onAddToFavorite}
-                onAddToCart={onAddToCart}
                 isLoading={isLoading}
               />
             }

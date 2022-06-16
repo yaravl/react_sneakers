@@ -1,6 +1,9 @@
 import "./Drawer.scss";
+import { useContext } from "react";
+import AppContext from "../../context";
 
-function Drawer({ onClose, items = [], onRemoveItem }) {
+function Drawer({ onClose }) {
+  const { cartItems, onRemoveInCart } = useContext(AppContext);
   return (
     <div className="overlay">
       <div className="drawer d-flex flex-column">
@@ -14,10 +17,10 @@ function Drawer({ onClose, items = [], onRemoveItem }) {
           />
         </h2>
 
-        {items.length > 0 ? (
+        {cartItems.length > 0 ? (
           <>
             <div className="items flex">
-              {items.map(({ name, price, img, id }, index) => {
+              {cartItems.map(({ name, price, img, id, idCart }, index) => {
                 return (
                   <div
                     key={index}
@@ -35,7 +38,7 @@ function Drawer({ onClose, items = [], onRemoveItem }) {
                       className="removeBtn"
                       src="/img/button-remove.svg"
                       alt="remove"
-                      onClick={() => onRemoveItem(id)}
+                      onClick={() => onRemoveInCart(idCart)}
                     />
                   </div>
                 );
