@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import ContentLoader from "react-content-loader";
 import css from "./Card.module.scss";
+import { useContext } from "react";
+import AppContext from "../../context";
 
 function Card({
   id,
@@ -8,24 +10,20 @@ function Card({
   price,
   img,
   onPlus,
-  onRemove,
   onFavorite,
-  onRemoveFavorite,
   favorited = false,
   loading = false,
-  added = false,
 }) {
-  const [isAdded, setIsAdded] = useState(added);
-  const [isFavorite, setIsFavorite] = useState(favorited);
+  const { isItemAdded, onAddToFavorite, favorites } = useContext(AppContext);
 
   const onClickPlus = () => {
-    setIsAdded(!isAdded);
+    isItemAdded(id);
     onPlus({ id, name, price, img });
   };
 
+  console.log();
   const onClickFavorite = () => {
-    setIsFavorite(!isFavorite);
-    onFavorite({ id, name, price, img });
+    onAddToFavorite({ id, name, price, img });
   };
 
   return (
@@ -50,7 +48,9 @@ function Card({
           <div className={css.favorite} onClick={onClickFavorite}>
             <img
               src={
-                isFavorite ? "/img/heart-liked.svg" : "/img/heart-unliked.svg"
+                favorites.some((item) => Number(item.id) === Number(id))
+                  ? "/img/heart-liked.svg"
+                  : "/img/heart-unliked.svg"
               }
               alt="favorite"
             />
@@ -64,7 +64,11 @@ function Card({
               <b>{price} руб.</b>
             </div>
             <img
-              src={isAdded ? "/img/button-checked.svg" : "/img/button-plus.svg"}
+              src={
+                isItemAdded(id)
+                  ? "/img/button-checked.svg"
+                  : "/img/button-plus.svg"
+              }
               onClick={onClickPlus}
               className={css.plus}
             />

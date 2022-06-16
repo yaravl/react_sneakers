@@ -14,17 +14,18 @@ const Home = ({
     const filteredItems = items.filter((item) =>
       item.name.toLowerCase().includes(searchValue.toLowerCase())
     );
-    //TODO: 6(142)
-    return (isLoading ? [...Array(12)] : filteredItems).map((item, index) => (
-      <Card
-        key={index}
-        onFavorite={(obj) => onAddToFavorite(obj)}
-        onPlus={(obj) => onAddToCart(obj)}
-        added={cartItems.some((obj) => Number(obj.id) === Number(item.id))}
-        loading={isLoading}
-        {...item}
-      />
-    ));
+
+    return (isLoading ? Array(10).fill({}) : filteredItems).map(
+      (item, index) => (
+        <Card
+          key={index}
+          onFavorite={(obj) => onAddToFavorite(obj)}
+          onPlus={(obj) => onAddToCart(obj)}
+          loading={isLoading}
+          {...item}
+        />
+      )
+    );
   };
 
   return (
