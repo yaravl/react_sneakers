@@ -2,9 +2,9 @@ import { createContext, useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import { Card, Header, Drawer } from "./components";
 import axios from "axios";
-import { Home, Favorites } from "./pages";
+import { Home, Favorites, Orders } from "./pages";
 
-import AppContext from "./context";
+import { AppContext } from "./context";
 
 function App() {
   const [items, setItems] = useState([]);
@@ -35,6 +35,8 @@ function App() {
 
     fetchData();
   }, []);
+
+  //TODO: 7(105)
 
   const onAddToCart = (obj) => {
     try {
@@ -143,6 +145,7 @@ function App() {
             }
           />
           <Route path="/favorites" element={<Favorites />} />
+          <Route path="/orders" element={<Orders />} />
         </Routes>
       </div>
     </AppContext.Provider>

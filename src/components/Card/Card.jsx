@@ -1,9 +1,17 @@
 import ContentLoader from "react-content-loader";
 import css from "./Card.module.scss";
 import { useContext } from "react";
-import AppContext from "../../context";
+import { AppContext } from "../../context";
 
-function Card({ id, idCart, name, price, img, loading = false }) {
+function Card({
+  id,
+  idCart,
+  name,
+  price,
+  img,
+  loading = false,
+  hideBtn = false,
+}) {
   const { isItemAdded, onAddToFavorite, favorites, onAddToCart, numFormat } =
     useContext(AppContext);
 
@@ -35,16 +43,18 @@ function Card({ id, idCart, name, price, img, loading = false }) {
         </ContentLoader>
       ) : (
         <>
-          <div className={css.favorite} onClick={onClickFavorite}>
-            <img
-              src={
-                favorites.some((item) => Number(item.id) === Number(id))
-                  ? "/img/heart-liked.svg"
-                  : "/img/heart-unliked.svg"
-              }
-              alt="favorite"
-            />
-          </div>
+          {hideBtn ? null : (
+            <div className={css.favorite} onClick={onClickFavorite}>
+              <img
+                src={
+                  favorites.some((item) => Number(item.id) === Number(id))
+                    ? "/img/heart-liked.svg"
+                    : "/img/heart-unliked.svg"
+                }
+                alt="favorite"
+              />
+            </div>
+          )}
 
           <img width={133} height={112} src={img} alt="Sneakers" />
           <h5>{name}</h5>
@@ -53,15 +63,17 @@ function Card({ id, idCart, name, price, img, loading = false }) {
               <span>Цена:</span>
               <b>{numFormat(price)} руб.</b>
             </div>
-            <img
-              src={
-                isItemAdded(id)
-                  ? "/img/button-checked.svg"
-                  : "/img/button-plus.svg"
-              }
-              onClick={onClickPlus}
-              className={css.plus}
-            />
+            {hideBtn ? null : (
+              <img
+                src={
+                  isItemAdded(id)
+                    ? "/img/button-checked.svg"
+                    : "/img/button-plus.svg"
+                }
+                onClick={onClickPlus}
+                className={css.plus}
+              />
+            )}
           </div>
         </>
       )}

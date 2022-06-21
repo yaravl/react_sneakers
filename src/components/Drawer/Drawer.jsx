@@ -1,6 +1,6 @@
 import "./Drawer.scss";
 import { useContext, useState } from "react";
-import AppContext from "../../context";
+import { AppContext } from "../../context";
 import { Info } from "../index";
 import axios from "axios";
 

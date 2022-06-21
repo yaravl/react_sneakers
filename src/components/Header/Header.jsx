@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import "./Header.scss";
 import { useContext } from "react";
-import AppContext from "../../context";
+import { AppContext } from "../../context";
 
 function Header() {
   const { cartItems, favorites, totalPrice, numFormat, setCartOpened } =
@@ -35,7 +35,9 @@ function Header() {
           </Link>
         </li>
         <li>
-          <img width={18} height={18} src="/img/user.svg" alt="user" />
+          <Link to="/orders">
+            <img width={18} height={18} src="/img/user.svg" alt="user" />
+          </Link>
         </li>
       </ul>
     </header>
