@@ -1,4 +1,4 @@
-import { Card } from "../components";
+import { Card, Pagination } from "../components";
 
 const Home = ({
   items,
@@ -47,6 +47,7 @@ const Home = ({
         </div>
       </div>
       <div className="d-flex flex-wrap">{renderItems()}</div>
+      <Pagination />
     </div>
   );
 };

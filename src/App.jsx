@@ -1,6 +1,6 @@
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import { Card, Header, Drawer } from "./components";
+import { Header, Drawer } from "./components";
 import axios from "axios";
 import { Home, Favorites, Orders } from "./pages";
 
@@ -14,29 +14,44 @@ function App() {
   const [cartOpened, setCartOpened] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [itemsLength, setItemsLength] = useState(0);
+
   useEffect(() => {
     async function fetchData() {
-      const cartResp = await axios.get(
-        "https://62a63067430ba53411d2342d.mockapi.io/cart"
-      );
-      const favoritesResp = await axios.get(
-        "https://62a63067430ba53411d2342d.mockapi.io/favorites"
-      );
-      const itemsResp = await axios.get(
-        "https://62a63067430ba53411d2342d.mockapi.io/items"
-      );
+      try {
+        const [cartResp, favoritesResp, itemsResp] = await Promise.all([
+          axios.get("https://62a63067430ba53411d2342d.mockapi.io/cart"),
+          axios.get("https://62a63067430ba53411d2342d.mockapi.io/favorites"),
+          axios.get(
+            `https://62a63067430ba53411d2342d.mockapi.io/items?page=1&limit=4`
+          ),
+        ]);
 
-      setIsLoading(false);
+        setIsLoading(false);
 
-      setCartItems(cartResp.data);
-      setFavorites(favoritesResp.data);
-      setItems(itemsResp.data);
+        setCartItems(cartResp.data);
+        setFavorites(favoritesResp.data);
+        setItems(itemsResp.data);
+      } catch (e) {
+        alert("Ошибка при запросе данных");
+      }
     }
 
     fetchData();
   }, []);
 
-  //TODO: 7(105)
+  useEffect(() => {
+    try {
+      (async () => {
+        const itemsResp = await axios.get(
+          "https://62a63067430ba53411d2342d.mockapi.io/items"
+        );
+        setItemsLength(itemsResp.data.length);
+      })();
+    } catch (e) {
+      alert("Оишбка при запросе данных");
+    }
+  }, []);
 
   const onAddToCart = (obj) => {
     try {
@@ -91,8 +106,12 @@ function App() {
   };
 
   const onRemoveInCart = (id) => {
-    axios.delete(`https://62a63067430ba53411d2342d.mockapi.io/cart/${id}`);
-    setCartItems((prevState) => prevState.filter((_) => _.idCart !== id));
+    try {
+      axios.delete(`https://62a63067430ba53411d2342d.mockapi.io/cart/${id}`);
+      setCartItems((prevState) => prevState.filter((_) => _.idCart !== id));
+    } catch (e) {
+      alert("Неудалось удалить из корзины");
+    }
   };
 
   const onChangeSearchInput = (e) => {
@@ -123,10 +142,13 @@ function App() {
         numFormat,
         setCartOpened,
         setCartItems,
+        setItems,
+        itemsLength,
+        cartOpened,
       }}
     >
       <div className="wrapper clear">
-        {cartOpened && <Drawer />}
+        <Drawer />
 
         <Header />
 

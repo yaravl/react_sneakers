@@ -1,0 +1,23 @@
+.pagination {
+  &__list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  &__item {
+    display: block;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 26px;
+    border-radius: 50%;
+    border: 2px solid #eeeeee;
+    cursor: pointer;
+    transition: border ease-in-out .3s, transform ease-in-out .3s;
+    margin: 0 10px;
+    &:hover {
+      transform: scale(1.1);
+      border: 2px solid #eaeaea;
+    }
+  }
+}

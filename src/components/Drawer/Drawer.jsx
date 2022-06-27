@@ -12,6 +12,7 @@ function Drawer() {
     numFormat,
     setCartOpened,
     setCartItems,
+    cartOpened,
   } = useContext(AppContext);
 
   const [isOrderComplete, setIsOrderComplete] = useState(false);
@@ -42,8 +43,12 @@ function Drawer() {
   };
 
   return (
-    <div className="overlay">
-      <div className="drawer d-flex flex-column">
+    <div className={`overlay ${cartOpened && "overlay-visible"}`}>
+      <div
+        className={`drawer d-flex flex-column ${
+          cartOpened && "drawer-visible"
+        }`}
+      >
         <h2 className="mb-30 d-flex justify-between">
           Корзина
           <img
